@@ -1,9 +1,15 @@
-use std::{
-    fs, io,
-    os::unix::{
-        io::{IntoRawFd, RawFd},
-        prelude::AsRawFd,
-    },
+use std::{fs, io};
+
+#[cfg(unix)]
+use std::os::unix::{
+    io::{IntoRawFd, RawFd},
+    prelude::AsRawFd,
+};
+
+#[cfg(target_os = "wasi")]
+use std::os::wasi::{
+    io::{IntoRawFd, RawFd},
+    prelude::AsRawFd,
 };
 
 use libc::size_t;

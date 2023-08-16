@@ -6,22 +6,22 @@ pub(crate) trait Filter: Send + Sync + 'static {
     fn eval(&self, event: &InternalEvent) -> bool;
 }
 
-#[cfg(unix)]
+#[cfg(any(unix, target_os = "wasi"))]
 #[derive(Debug, Clone)]
 pub(crate) struct CursorPositionFilter;
 
-#[cfg(unix)]
+#[cfg(any(unix, target_os = "wasi"))]
 impl Filter for CursorPositionFilter {
     fn eval(&self, event: &InternalEvent) -> bool {
         matches!(*event, InternalEvent::CursorPosition(_, _))
     }
 }
 
-#[cfg(unix)]
+#[cfg(any(unix, target_os = "wasi"))]
 #[derive(Debug, Clone)]
 pub(crate) struct KeyboardEnhancementFlagsFilter;
 
-#[cfg(unix)]
+#[cfg(any(unix, target_os = "wasi"))]
 impl Filter for KeyboardEnhancementFlagsFilter {
     fn eval(&self, event: &InternalEvent) -> bool {
         // This filter checks for either a KeyboardEnhancementFlags response or
@@ -35,11 +35,11 @@ impl Filter for KeyboardEnhancementFlagsFilter {
     }
 }
 
-#[cfg(unix)]
+#[cfg(any(unix, target_os = "wasi"))]
 #[derive(Debug, Clone)]
 pub(crate) struct PrimaryDeviceAttributesFilter;
 
-#[cfg(unix)]
+#[cfg(any(unix, target_os = "wasi"))]
 impl Filter for PrimaryDeviceAttributesFilter {
     fn eval(&self, event: &InternalEvent) -> bool {
         matches!(*event, InternalEvent::PrimaryDeviceAttributes)
@@ -50,7 +50,7 @@ impl Filter for PrimaryDeviceAttributesFilter {
 pub(crate) struct EventFilter;
 
 impl Filter for EventFilter {
-    #[cfg(unix)]
+    #[cfg(any(unix, target_os = "wasi"))]
     fn eval(&self, event: &InternalEvent) -> bool {
         matches!(*event, InternalEvent::Event(_))
     }
@@ -71,7 +71,7 @@ impl Filter for InternalEventFilter {
 }
 
 #[cfg(test)]
-#[cfg(unix)]
+#[cfg(any(unix, target_os = "wasi"))]
 mod tests {
     use super::{
         super::Event, CursorPositionFilter, EventFilter, Filter, InternalEvent,

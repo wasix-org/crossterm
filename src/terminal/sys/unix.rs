@@ -8,6 +8,7 @@ use libc::{
     cfmakeraw, ioctl, tcgetattr, tcsetattr, termios as Termios, winsize, STDOUT_FILENO, TCSANOW,
     TIOCGWINSZ,
 };
+
 use parking_lot::Mutex;
 use std::fs::File;
 

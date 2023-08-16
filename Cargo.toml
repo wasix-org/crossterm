@@ -28,18 +28,28 @@ all-features = true
 #
 [features]
 default = ["bracketed-paste", "windows", "events"]
-windows = ["dep:winapi", "dep:crossterm_winapi"] # Disables winapi dependencies from being included into the binary (SHOULD NOT be disabled on windows).
-bracketed-paste = [] # Enables triggering a `Event::Paste` when pasting text into the terminal.
+windows = [
+    "dep:winapi",
+    "dep:crossterm_winapi",
+] # Disables winapi dependencies from being included into the binary (SHOULD NOT be disabled on windows).
+bracketed-paste = [
+] # Enables triggering a `Event::Paste` when pasting text into the terminal.
 event-stream = ["dep:futures-core", "events"] # Enables async events
-use-dev-tty = ["filedescriptor"] # Enables raw file descriptor polling / selecting instead of mio.
-events = ["dep:mio", "dep:signal-hook", "dep:signal-hook-mio"] # Enables reading input/events from the system.
+use-dev-tty = [
+    "filedescriptor",
+] # Enables raw file descriptor polling / selecting instead of mio.
+events = [
+    "dep:mio",
+    "dep:signal-hook",
+    "dep:signal-hook-mio",
+] # Enables reading input/events from the system.
 serde = ["dep:serde", "bitflags/serde"] # Enables 'serde' for various types.
 
 #
 # Shared dependencies
 #
 [dependencies]
-bitflags = {version = "2.3" }
+bitflags = { version = "2.3" }
 parking_lot = "0.12"
 
 # optional deps only added when requested
@@ -57,26 +67,46 @@ optional = true
 [target.'cfg(windows)'.dependencies]
 crossterm_winapi = { version = "0.9.1", optional = true }
 
+
+[target.'cfg(all(target_os = "wasi", target_vendor = "unknown"))'.dependencies]
+wasi = { version = "^0.11" }
+[target.'cfg(all(target_os = "wasi", target_vendor = "wasmer"))'.dependencies]
+wasix = { version = "0.12" }
+
 #
 # UNIX dependencies
 #
-[target.'cfg(unix)'.dependencies]
+[target.'cfg(any(unix, target_os = "wasi"))'.dependencies]
 libc = "0.2"
 signal-hook = { version = "0.3.17", optional = true }
 filedescriptor = { version = "0.8", optional = true }
-mio = { version = "0.8", features = ["os-poll"], optional = true }
-signal-hook-mio = { version = "0.2.3", features = ["support-v0_8"], optional = true }
+
+mio = { version = "=0.8.8", git = "https://github.com/wasix-org/mio.git", branch = "v0.8.8", features = [
+    "os-poll",
+], optional = true }
+
+signal-hook-mio = { version = "0.2.3", features = [
+    "support-v0_8",
+], optional = true }
 
 #
 # Dev dependencies (examples, ...)
 #
 [dev-dependencies]
-tokio = { version = "1.25", features = ["full"] }
+tokio = { version = "=1.24.2", features = [
+    "full",
+], git = "https://github.com/wasix-org/tokio.git", branch = "epoll" }
 futures = "0.3"
 futures-timer = "3.0"
 async-std = "1.12"
 serde_json = "1.0"
 serial_test = "2.0.0"
+
+[patch.crates-io]
+mio = { git = "https://github.com/wasix-org/mio.git", branch = "v0.8.8" }
+tokio = { git = "https://github.com/wasix-org/tokio.git", branch = "epoll" }
+libc = { git = "https://github.com/wasix-org/libc.git", branch = "v0.2.147" }
+
 
 #
 # Examples

@@ -209,7 +209,7 @@ pub fn poll(timeout: Duration) -> std::io::Result<bool> {
 pub fn read() -> std::io::Result<Event> {
     match read_internal(&EventFilter)? {
         InternalEvent::Event(event) => Ok(event),
-        #[cfg(unix)]
+        #[cfg(any(unix, target_os = "wasi"))]
         _ => unreachable!(),
     }
 }
@@ -945,13 +945,13 @@ pub(crate) enum InternalEvent {
     /// An event.
     Event(Event),
     /// A cursor position (`col`, `row`).
-    #[cfg(unix)]
+    #[cfg(any(unix, target_os = "wasi"))]
     CursorPosition(u16, u16),
     /// The progressive keyboard enhancement flags enabled by the terminal.
-    #[cfg(unix)]
+    #[cfg(any(unix, target_os = "wasi"))]
     KeyboardEnhancementFlags(KeyboardEnhancementFlags),
     /// Attributes and architectural class of the terminal.
-    #[cfg(unix)]
+    #[cfg(any(unix, target_os = "wasi"))]
     PrimaryDeviceAttributes,
 }
 
