@@ -11,3 +11,9 @@ publish = false
 
 [dependencies]
 crossterm = { path = "../../" }
+
+[patch.crates-io]
+mio = { path = "../../../mio" }
+tokio = { git = "https://github.com/wasix-org/tokio.git", branch = "epoll" }
+libc = { path = "../../../libc" }
+socket2 = { path = "../../../socket2", version = "0.4.9"}
